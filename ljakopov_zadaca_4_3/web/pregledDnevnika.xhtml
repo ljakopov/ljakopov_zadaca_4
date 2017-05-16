@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <body>
+
+        <ui:composition template="./predlozak.xhtml">
+
+            <ui:define name="naslov">
+                NWTiS - Zadaća 4 - Dnevnik
+            </ui:define>
+
+            <ui:define name="top">
+                Pregled dnevnika
+            </ui:define>
+
+            <ui:define name="left">
+                <h:link value="Početna" outcome="pocetna" /><br/>
+                <h:link value="IoT" outcome="iot" /><br/>
+                <h:link value="Promjene" outcome="promjene" /><br/>
+            </ui:define>
+
+            <ui:define name="content">
+                TODO pregled dnevnika
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

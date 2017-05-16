@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./predlozak.xhtml">
+
+            <ui:define name="naslov">
+                NWTiS - Zadaća 4 - IoT
+            </ui:define>
+
+            <ui:define name="top">
+                Pregled IoT uređaja i prognoza vremena
+            </ui:define>
+
+            <ui:define name="left">
+                <h:link value="Početna" outcome="pocetna" /><br/>
+                <h:link value="Dnevnik" outcome="dnevnik" /><br/>
+                <h:link value="Promjene" outcome="promjene" /><br/>
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form>
+                    <h:panelGrid columns="3">
+                        <h:outputLabel for="noviId" value="ID: "/>
+                        <h:inputText id="noviId" value="#{odabirIoTPrognoza.noviId}"/>
+                        <h:outputText value="" />
+                        <h:outputLabel for="noviNaziv" value="Naziv: "/>
+                        <h:inputText id="noviNaziv" value="#{odabirIoTPrognoza.noviNaziv}"/>
+                        <h:outputText value="" />
+                        <h:outputLabel for="noviAdresa" value="Adresa: "/>
+                        <h:inputText id="noviAdresa" value="#{odabirIoTPrognoza.noviAdresa}" />
+                        <h:outputText value="" />
+                        <h:commandButton value="Dodaj IoT Uređaj" 
+                                         action="#{odabirIoTPrognoza.dodajIoTUredaj()}">
+                            <f:ajax execute="noviId noviNaziv noviAdresa" render="raspoloziviIoT" />
+                        </h:commandButton>
+
+                    </h:panelGrid>
+                    <h:panelGrid columns="4">
+                        <h:outputText value="Raspoloživi IoT uređaji" />
+                        <h:outputText value="" />
+                        <h:outputText value="Odabrani IoT uređaji" />
+                        <h:outputText value="" />
+                        <h:selectManyListbox id="raspoloziviIoT"  size="7"
+                                             value="#{odabirIoTPrognoza.popisRaspoloziviIoT}">
+                            <f:selectItems value="#{odabirIoTPrognoza.raspoloziviIoT}" var="r" 
+                                           itemLabel="#{r.labela}" itemValue="#{r.vrijednost}"/>
+                        </h:selectManyListbox>
+                        <h:panelGrid columns="1">
+                            <h:commandButton value="Preuzmi" action="#{odabirIoTPrognoza.preuzmiRaspoloziveIoTUredaje()}" /> 
+                            <h:commandButton value="Vrati" action="a" /> 
+                            <h:commandButton value="Ažuriraj" action="#{odabirIoTPrognoza.azuriraj()}" > 
+                                <f:ajax render="panelGridPrikaz"/>
+                            </h:commandButton>
+                        </h:panelGrid>
+                        <h:selectManyListbox id="odabraniIoT" size="7"
+                                             value="#{odabirIoTPrognoza.popisOdabraniIoT}">
+                            <f:selectItems value="#{odabirIoTPrognoza.odabraniIoT}" var="o" 
+                                           itemLabel="#{o.labela}" itemValue="#{o.vrijednost}"/>
+                        </h:selectManyListbox>
+
+                        <h:commandButton value="#{odabirIoTPrognoza.gumbPregledPrognoza}" action="a" /> 
+                    </h:panelGrid>
+                    <h:panelGrid id="panelGridPrikaz" columns="3">
+                        <h:outputLabel for="azurirajId" value="ID: " rendered="#{odabirIoTPrognoza.azuriranje}"/>
+                        <h:inputText id="azurirajId" value="#{odabirIoTPrognoza.azurirajId}" rendered="#{odabirIoTPrognoza.azuriranje}"/>
+                        <h:outputText value="" rendered="#{odabirIoTPrognoza.azuriranje}"/>
+                        <h:outputLabel for="azurirajNaziv" value="Naziv: " rendered="#{odabirIoTPrognoza.azuriranje}"/>
+                        <h:inputText id="azurirajNaziv" value="#{odabirIoTPrognoza.azurirajNaziv}" rendered="#{odabirIoTPrognoza.azuriranje}"/>
+                        <h:outputText value="" rendered="#{odabirIoTPrognoza.azuriranje}"/>
+                        <h:outputLabel for="azurirajAdresa" value="Adresa: " rendered="#{odabirIoTPrognoza.azuriranje}"/>
+                        <h:inputText id="azurirajAdresa" value="#{odabirIoTPrognoza.azurirajAdresa}" rendered="#{odabirIoTPrognoza.azuriranje}"/>
+                        <h:outputText value="" rendered="#{odabirIoTPrognoza.azuriranje}"/>
+                        <h:commandButton value="Upiši" action="#{odabirIoTPrognoza.sakrij()}" rendered="#{odabirIoTPrognoza.azuriranje}"/> 
+                    </h:panelGrid>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>
