@@ -55,7 +55,7 @@
                             <h:commandButton value="Preuzmi" action="#{odabirIoTPrognoza.preuzmiRaspoloziveIoTUredaje()}" /> 
                             <h:commandButton value="Vrati" action="a" /> 
                             <h:commandButton value="Ažuriraj" action="#{odabirIoTPrognoza.azuriraj()}" > 
-                                <f:ajax render="panelGridPrikaz"/>
+                                <f:ajax execute="raspoloziviIoT" render="panelGridPrikaz"/>
                             </h:commandButton>
                         </h:panelGrid>
                         <h:selectManyListbox id="odabraniIoT" size="7"
@@ -76,7 +76,9 @@
                         <h:outputLabel for="azurirajAdresa" value="Adresa: " rendered="#{odabirIoTPrognoza.azuriranje}"/>
                         <h:inputText id="azurirajAdresa" value="#{odabirIoTPrognoza.azurirajAdresa}" rendered="#{odabirIoTPrognoza.azuriranje}"/>
                         <h:outputText value="" rendered="#{odabirIoTPrognoza.azuriranje}"/>
-                        <h:commandButton value="Upiši" action="#{odabirIoTPrognoza.sakrij()}" rendered="#{odabirIoTPrognoza.azuriranje}"/> 
+                        <h:commandButton value="Upiši" action="#{odabirIoTPrognoza.spremmiAzuriranjeUBazu()}" rendered="#{odabirIoTPrognoza.azuriranje}">
+                            <f:ajax execute="raspoloziviIoT panelGridPrikaz" render="raspoloziviIoT panelGridPrikaz"/>
+                        </h:commandButton>
                     </h:panelGrid>
                 </h:form>
             </ui:define>

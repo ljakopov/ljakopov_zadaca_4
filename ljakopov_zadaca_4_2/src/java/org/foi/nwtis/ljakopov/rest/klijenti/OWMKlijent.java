@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.json.Json;
+import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.ws.rs.client.Client;
@@ -92,6 +93,25 @@ public class OWMKlijent {
 
     public MeteoPrognoza[] getWeatherForecast(String latitude, String longitude) {
         int brojPrognoza = 10;
+
+        WebTarget webResource = client.target(OWMRESTHelper.getOWM_BASE_URI())
+                .path(OWMRESTHelper.getOWM_Forecast_Path());
+        webResource = webResource.queryParam("lat", latitude);
+        webResource = webResource.queryParam("lon", longitude);
+        webResource = webResource.queryParam("lang", "hr");
+        webResource = webResource.queryParam("units", "metric");
+        webResource = webResource.queryParam("APIKEY", apiKey);
+
+        String odgovor = webResource.request(MediaType.APPLICATION_JSON).get(String.class);
+
+        JsonReader reader = Json.createReader(new StringReader(odgovor));
+        JsonObject jsonObject = reader.readObject();
+        JsonArray jsonArray = jsonObject.getJsonArray("list");
+
+        for (int i = 0; i < jsonArray.size(); i++) {
+            //Json
+
+        }
         //TODO preuzmi podatke sa servisa
         MeteoPrognoza[] mp = new MeteoPrognoza[brojPrognoza];
         MeteoPodaci meteoPodaci = new MeteoPodaci(new Date(), new Date(), 21.2f, 5.0f, 25.0f, "C", 70.0f, "%", 1010.2f, "hPa", 0.0f, "", 0.0f, "", "", 1, "", "OK", 0.0f, "", "", 7, "", "", new Date());

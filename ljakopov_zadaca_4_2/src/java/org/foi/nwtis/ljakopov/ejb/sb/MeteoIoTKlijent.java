@@ -36,4 +36,9 @@ public class MeteoIoTKlijent {
         Lokacija l = dajLokaciju(adresa);
         return owmk.getWeatherForecast(l.getLatitude(), l.getLongitude());
     }
+    
+    public String dajMjesto(String lat, String lot){
+        GMKlijent gmk = new GMKlijent();
+        return gmk.getGeoLocationFromLatLot(lat,lot);
+    }
 }

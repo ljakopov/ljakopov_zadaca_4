@@ -47,7 +47,7 @@ public class GMKlijent {
             JsonReader reader = Json.createReader(new StringReader(odgovor));
 
             JsonObject jo = reader.readObject();
-                     
+
             JsonObject obj = jo.getJsonArray("results")
                     .getJsonObject(0)
                     .getJsonObject("geometry")
@@ -61,5 +61,32 @@ public class GMKlijent {
             Logger.getLogger(OWMKlijent.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
+    }
+
+    public String getGeoLocationFromLatLot(String lat, String lot) {
+        try {
+            WebTarget webResource = client.target(GMRESTHelper.getGM_BASE_URI())
+                    .path("maps/api/geocode/json");
+            webResource = webResource.queryParam("latlng",
+                    URLEncoder.encode(lat + "," + lot, "UTF-8"));
+            webResource = webResource.queryParam("sensor", "false");
+
+            String odgovor = webResource.request(MediaType.APPLICATION_JSON).get(String.class);
+
+            JsonReader reader = Json.createReader(new StringReader(odgovor));
+
+            JsonObject jo = reader.readObject();
+
+            JsonObject obj = jo.getJsonArray("results")
+                    .getJsonObject(0)
+                    .getJsonArray("address_components")
+                    .getJsonObject(2);
+
+            return obj.getString("long_name");
+
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(OWMKlijent.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return "";
     }
 }
