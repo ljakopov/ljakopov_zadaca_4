@@ -23,7 +23,24 @@
             </ui:define>
 
             <ui:define name="content">
-                TODO pregled dnevnika
+                <h:form>
+                    <h:panelGrid columns="3">
+                        <h:outputLabel  value="vrijeme od-do"/>
+                        <h:inputText id="vrijeme" />
+                        <br/>
+                        <h:outputLabel value="IPADRESA"/>
+                        <h:inputText id="ipadresa"/>
+                        <br/>
+                        <h:outputLabel value="Trajanje"/>
+                        <h:inputText id="trajanje"/>
+                        <br/>
+                        <h:outputLabel value="Status"/>
+                        <h:inputText id="status"/>
+                        <br/>
+                        <h:commandButton value="Prikaži podatke iz dnevnika" >
+                        </h:commandButton>
+                    </h:panelGrid>
+                </h:form>
             </ui:define>
 
         </ui:composition>
