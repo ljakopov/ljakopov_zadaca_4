@@ -31,10 +31,10 @@ public class MeteoIoTKlijent {
         return gmk.getGeoLocation(adresa);
     }
 
-    public MeteoPrognoza[] dajMeteoPrognoze(String adresa) {
+    public MeteoPrognoza[] dajMeteoPrognoze(int id, String adresa) {
         OWMKlijent owmk = new OWMKlijent(api_key);
         Lokacija l = dajLokaciju(adresa);
-        return owmk.getWeatherForecast(l.getLatitude(), l.getLongitude());
+        return owmk.getWeatherForecast(id, l.getLatitude(), l.getLongitude());
     }
     
     public String dajMjesto(String lat, String lot){

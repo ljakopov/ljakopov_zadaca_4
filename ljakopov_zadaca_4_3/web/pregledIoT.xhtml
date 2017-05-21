@@ -64,7 +64,10 @@
                                            itemLabel="#{o.labela}" itemValue="#{o.vrijednost}"/>
                         </h:selectManyListbox>
 
-                        <h:commandButton value="#{odabirIoTPrognoza.gumbPregledPrognoza}" action="a" /> 
+                        <h:commandButton id="gumb" value="#{odabirIoTPrognoza.gumbPregledPrognoza}" action="#{odabirIoTPrognoza.dohvatiPrognoze()}" > 
+                            <f:ajax render="prikazPodataka podaciUTablici gumb "/>
+
+                        </h:commandButton>
                     </h:panelGrid>
                     <h:panelGrid id="panelGridPrikaz" columns="3">
                         <h:outputLabel for="azurirajId" value="ID: " rendered="#{odabirIoTPrognoza.azuriranje}"/>
@@ -81,6 +84,51 @@
                         </h:commandButton>
                     </h:panelGrid>
                 </h:form>
+                <h:panelGrid id="prikazPodataka">
+                    <h:dataTable id="podaciUTablici" value="#{odabirIoTPrognoza.meteoPrognoze}" var="prikazMeteoPodataka" border="1" rendered="#{odabirIoTPrognoza.prognoze}">
+                        <h:column>
+                            <f:facet name="header">ID</f:facet>
+                                #{prikazMeteoPodataka.id}
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Temperatura</f:facet>
+                                #{prikazMeteoPodataka.prognoza.temperatureValue}
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Min Temperatura</f:facet>
+                                #{prikazMeteoPodataka.prognoza.temperatureMin}
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Max Temperatura</f:facet>
+                                #{prikazMeteoPodataka.prognoza.temperatureMax}
+                        </h:column> 
+                        <h:column>
+                            <f:facet name="header">Vlažnost</f:facet>
+                                #{prikazMeteoPodataka.prognoza.humidityValue}
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Tlak</f:facet>
+                                #{prikazMeteoPodataka.prognoza.pressureValue}
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Brzina vjetra</f:facet>
+                                #{prikazMeteoPodataka.prognoza.windSpeedValue}
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Oblaci</f:facet>
+                                #{prikazMeteoPodataka.prognoza.windSpeedValue}
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Vrijeme ID</f:facet>
+                                #{prikazMeteoPodataka.prognoza.weatherNumber}
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Vrijeme opis</f:facet>
+                                #{prikazMeteoPodataka.prognoza.weatherValue}
+                        </h:column>
+                    </h:dataTable>
+
+                </h:panelGrid>
             </ui:define>
 
         </ui:composition>
