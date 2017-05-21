@@ -13,8 +13,14 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
+import org.foi.nwtis.ljakopov.ejb.eb.Dnevnik;
+import org.foi.nwtis.ljakopov.ejb.eb.Promjene;
 import org.foi.nwtis.ljakopov.ejb.eb.Uredaji;
+import org.foi.nwtis.ljakopov.ejb.sb.DnevnikFacade;
 import org.foi.nwtis.ljakopov.ejb.sb.MeteoIoTKlijent;
+import org.foi.nwtis.ljakopov.ejb.sb.PromjeneFacade;
 import org.foi.nwtis.ljakopov.ejb.sb.UredajiFacade;
 import org.foi.nwtis.ljakopov.web.kontrole.Izbornik;
 import org.foi.nwtis.ljakopov.web.podaci.Lokacija;
@@ -27,6 +33,12 @@ import org.foi.nwtis.ljakopov.web.podaci.MeteoPrognoza;
 @Named(value = "odabirIoTPrognoza")
 @SessionScoped
 public class OdabirIoTPrognoza implements Serializable {
+
+    @EJB
+    private DnevnikFacade dnevnikFacade;
+
+    @EJB
+    private PromjeneFacade promjeneFacade;
 
     @EJB
     private MeteoIoTKlijent meteoIoTKlijent;
@@ -174,14 +186,47 @@ public class OdabirIoTPrognoza implements Serializable {
         this.gumbPregledPrognoza = gumbPregledPrognoza;
     }
 
+    private void spremiUPromjene(int id, String naziv, float lat, float log, int status) {
+        Promjene promjene = new Promjene();
+        promjene.setId(id);
+        promjene.setNaziv(naziv);
+        promjene.setLatitude(lat);
+        promjene.setLongitude(log);
+        promjene.setStatus(status);
+        promjene.setVrijemeKreiranja(new Date());
+        promjene.setVrijemePromjene(new Date());
+        promjeneFacade.create(promjene);
+    }
+
+    private void spremiUDnevnik(int trajanje) {
+        HttpServletRequest httpServletRequest = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        String ipAdresa = httpServletRequest.getHeader("X-FORWARDED-FOR");
+        String urlAdresa = httpServletRequest.getRequestURI();
+        if (ipAdresa == null) {
+            ipAdresa = httpServletRequest.getRemoteAddr();
+        }
+        Dnevnik dnevnik = new Dnevnik();
+        dnevnik.setKorisnik("ljakopov");
+        dnevnik.setStatus(0);
+        dnevnik.setIpadresa(ipAdresa);
+        dnevnik.setUrl(urlAdresa);
+        dnevnik.setTrajanje(trajanje);
+        dnevnik.setVrijeme(new Date());
+        dnevnikFacade.create(dnevnik);
+    }
+
     public String dodajIoTUredaj() {
         if (!noviId.isEmpty() && !noviAdresa.isEmpty() && !noviNaziv.isEmpty()) {
+            long pocetak = System.currentTimeMillis();
             Lokacija l = meteoIoTKlijent.dajLokaciju(noviAdresa);
             Uredaji uredaji = new Uredaji(Integer.parseInt(noviId), noviNaziv,
                     Float.parseFloat(l.getLatitude()),
                     Float.parseFloat(l.getLongitude()), 0, new Date(), new Date());
             uredajiFacade.create(uredaji);
+            spremiUPromjene(Integer.parseInt(noviId), noviNaziv, Float.parseFloat(l.getLatitude()), Float.parseFloat(l.getLongitude()), 0);
+            long kraj = System.currentTimeMillis();
             preuzmiRaspoloziveIoTUredaje();
+            spremiUDnevnik((int) (kraj - pocetak));
         } else {
 
         }
@@ -189,18 +234,19 @@ public class OdabirIoTPrognoza implements Serializable {
     }
 
     public void preuzmiRaspoloziveIoTUredaje() {
+        long pocetak = System.currentTimeMillis();
         this.raspoloziviIoT.clear();
         List<Uredaji> raspolozivi = uredajiFacade.findAll();
-        System.out.println("OVO JE POPIS: " + popisRaspoloziviIoT);
+        System.out.println("DOHVACANJE");
         for (Uredaji uredaji : raspolozivi) {
-
             System.out.println("PRIMEJR: " + uredaji.getNaziv());
             if (!this.popisRaspoloziviIoT.isEmpty()) {
                 for (int i = 0; i < this.popisRaspoloziviIoT.size(); i++) {
                     if (uredaji.getId().toString().equals(this.popisRaspoloziviIoT.get(i))) {
+                        System.out.println("ISPIS: " + popisRaspoloziviIoT);
                         this.odabraniIoT.add(new Izbornik(uredaji.getNaziv(),
                                 uredaji.getId().toString()));
-                    } /*else {
+                    } else {
                         System.out.println("ISPIS: " + popisRaspoloziviIoT);
                         for (int j = 0; j < this.odabraniIoT.size(); j++) {
                             if (uredaji.getId().toString().equals(this.odabraniIoT.get(j).getVrijednost())) {
@@ -212,15 +258,13 @@ public class OdabirIoTPrognoza implements Serializable {
                     }
                 }
             } else {
-                     */ //System.out.println("ovo je proba");
-
-                    // }
-                }
-            } else {
+                System.out.println("ovo je proba");
                 this.raspoloziviIoT.add(new Izbornik(uredaji.getNaziv(),
                         uredaji.getId().toString()));
             }
         }
+        long kraj = System.currentTimeMillis();
+        spremiUDnevnik((int) (kraj - pocetak));
         this.popisRaspoloziviIoT.clear();
     }
 
@@ -240,6 +284,7 @@ public class OdabirIoTPrognoza implements Serializable {
 
     public void spremmiAzuriranjeUBazu() {
         if (!azurirajId.isEmpty() && !azurirajAdresa.isEmpty() && !azurirajNaziv.isEmpty()) {
+            long pocetak = System.currentTimeMillis();
             if (this.azurirajId.equals(uredjajZaAzuriranje.getId().toString())) {
                 uredjajZaAzuriranje.setNaziv(azurirajNaziv);
                 Lokacija l = meteoIoTKlijent.dajLokaciju(azurirajAdresa);
@@ -247,11 +292,11 @@ public class OdabirIoTPrognoza implements Serializable {
                 uredjajZaAzuriranje.setLatitude(Float.parseFloat(l.getLatitude()));
                 uredjajZaAzuriranje.setLongitude(Float.parseFloat(l.getLongitude()));
                 uredajiFacade.edit(uredjajZaAzuriranje);
+                spremiUPromjene(uredjajZaAzuriranje.getId(), azurirajNaziv, Float.parseFloat(l.getLatitude()), Float.parseFloat(l.getLongitude()), 0);
             } else {
                 uredajiFacade.remove(uredjajZaAzuriranje);
                 Lokacija l = meteoIoTKlijent.dajLokaciju(azurirajAdresa);
                 Uredaji uredajiZaUnos = new Uredaji(Integer.parseInt(azurirajId), azurirajNaziv, Float.parseFloat(l.getLatitude()), Float.parseFloat(l.getLongitude()), 0, new Date(), new Date());
-                System.out.println("ISPIS UREĐAJA: " + uredajiZaUnos.getVrijemeKreiranja().toString());
                 uredajiFacade.create(uredajiZaUnos);
                 preuzmiRaspoloziveIoTUredaje();
 
@@ -259,11 +304,14 @@ public class OdabirIoTPrognoza implements Serializable {
             azuriranje = false;
             this.popisRaspoloziviIoT.clear();
             preuzmiRaspoloziveIoTUredaje();
+            long kraj = System.currentTimeMillis();
+            spremiUDnevnik((int) (kraj - pocetak));
         }
     }
 
     public void dohvatiPrognoze() {
         if (prognoze == false) {
+            long pocetak = System.currentTimeMillis();
             prognoze = true;
             gumbPregledPrognoza = "Zatvori prognoze";
             String adresa;
@@ -274,6 +322,8 @@ public class OdabirIoTPrognoza implements Serializable {
                 lis = meteoIoTKlijent.dajMeteoPrognoze(Integer.parseInt(odabraniIoT.get(i).getVrijednost()), adresa);
                 meteoPrognoze.addAll(Arrays.asList(lis));
             }
+            long kraj = System.currentTimeMillis();
+            spremiUDnevnik((int) (kraj - pocetak));
         } else {
             prognoze = false;
             gumbPregledPrognoza = "Prognoze";
