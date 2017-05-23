@@ -2,7 +2,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <body>
 
@@ -23,7 +24,56 @@
             </ui:define>
 
             <ui:define name="content">
-                TODO Pregled promjena
+                <h:form>
+                    <h:panelGrid columns="3">
+                        <h:outputLabel value="ID"/>
+                        <h:inputText id="id" value="#{pregledPromjena.id}"/>
+                        <br/>
+                        <h:outputLabel value="Naziv"/>
+                        <h:inputText id="naziv" value="#{pregledPromjena.naziv}"/>
+                        <br/>
+                        <h:commandButton value="Prikaži podatke iz dnevnika" action="#{pregledPromjena.preuzmiPodatkePromjena()}" >
+                            <f:ajax execute="id naziv" render="prikazPodataka"/>
+                        </h:commandButton>
+                    </h:panelGrid>
+                </h:form>
+                <h:panelGrid id="prikazPodataka">
+                    <h:dataTable id="podaciUTablici" value="#{pregledPromjena.promjena}" var="prikazPodatakaPromjena" border="1" rendered="#{pregledPromjena.prikazPromjena}">
+                        <h:column>
+                            <f:facet name="header">PID</f:facet>
+                                #{prikazPodatakaPromjena.pid}
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">ID</f:facet>
+                                #{prikazPodatakaPromjena.id}
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Naziv</f:facet>
+                            #{prikazPodatakaPromjena.naziv}
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Lat</f:facet>
+                                #{prikazPodatakaPromjena.latitude}
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Lot</f:facet>
+                                #{prikazPodatakaPromjena.longitude}
+                        </h:column> 
+                        <h:column>
+                            <f:facet name="header">Status</f:facet>
+                                #{prikazPodatakaPromjena.status}
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Vrijeme Promjene</f:facet>
+                                #{prikazPodatakaPromjena.vrijemePromjene}
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Vrijeme kreiranja</f:facet>
+                                #{prikazPodatakaPromjena.vrijemeKreiranja}
+                        </h:column>
+                    </h:dataTable>
+
+                </h:panelGrid>
             </ui:define>
 
         </ui:composition>
