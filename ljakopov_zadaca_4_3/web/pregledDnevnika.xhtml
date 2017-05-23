@@ -43,11 +43,12 @@
                         <h:inputText id="status" value="#{pregledDnevnika.status}"/>
                         <br/>
                         <h:commandButton value="Prikaži podatke iz dnevnika" action="#{pregledDnevnika.preuzimanjePodataka()}" >
+                            <f:ajax execute="datetime datetime1 ipadresa trajanje status" render="prikazPodataka"/>
                         </h:commandButton>
                     </h:panelGrid>
                 </h:form>
                 <h:panelGrid id="prikazPodataka">
-                    <h:dataTable id="podaciUTablici" value="#{pregledDnevnika.dnevnik}" var="prikazPodatakaDnevnika" border="1">
+                    <h:dataTable id="podaciUTablici" value="#{pregledDnevnika.dnevnik}" var="prikazPodatakaDnevnika" border="1" rendered="#{pregledDnevnika.prikazDnevnika}">
                         <h:column>
                             <f:facet name="header">ID</f:facet>
                                 #{prikazPodatakaDnevnika.id}

@@ -43,6 +43,7 @@ public class PregledDnevnika implements Serializable {
     private String status;
     private List<Dnevnik> dnevnik = new ArrayList<>();
     int atributi = 0;
+    private boolean prikazDnevnika = false;
 
     /**
      * Creates a new instance of PregledDnevnika
@@ -114,7 +115,16 @@ public class PregledDnevnika implements Serializable {
         this.dnevnik = dnevnik;
     }
 
+    public boolean isPrikazDnevnika() {
+        return prikazDnevnika;
+    }
+
+    public void setPrikazDnevnika(boolean prikazDnevnika) {
+        this.prikazDnevnika = prikazDnevnika;
+    }
+
     public void preuzimanjePodataka() {
+        prikazDnevnika = true;
         atributi = 0;
         EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("zadaca_4_1PU");
         EntityManager entityManager = entityManagerFactory.createEntityManager();
