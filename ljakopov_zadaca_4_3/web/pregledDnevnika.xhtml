@@ -2,7 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
 
     <body>
 
@@ -25,22 +27,58 @@
             <ui:define name="content">
                 <h:form>
                     <h:panelGrid columns="3">
-                        <h:outputLabel  value="vrijeme od-do"/>
-                        <h:inputText id="vrijeme" />
+                        <p:outputLabel for="datetime" value="OD:" />
+                        <p:calendar id="datetime" value="#{pregledDnevnika.vrijeme_od}" pattern="MM/dd/yyyy HH:mm:ss" />
+                        <br/>
+                        <p:outputLabel for="datetime1" value="OD:" />
+                        <p:calendar id="datetime1" value="#{pregledDnevnika.vrijeme_do}" pattern="MM/dd/yyyy HH:mm:ss" />
                         <br/>
                         <h:outputLabel value="IPADRESA"/>
-                        <h:inputText id="ipadresa"/>
+                        <h:inputText id="ipadresa" value="#{pregledDnevnika.ipAdresa}"/>
                         <br/>
                         <h:outputLabel value="Trajanje"/>
-                        <h:inputText id="trajanje"/>
+                        <h:inputText id="trajanje" value="#{pregledDnevnika.trajanje}"/>
                         <br/>
                         <h:outputLabel value="Status"/>
-                        <h:inputText id="status"/>
+                        <h:inputText id="status" value="#{pregledDnevnika.status}"/>
                         <br/>
-                        <h:commandButton value="Prikaži podatke iz dnevnika" >
+                        <h:commandButton value="Prikaži podatke iz dnevnika" action="#{pregledDnevnika.preuzimanjePodataka()}" >
                         </h:commandButton>
                     </h:panelGrid>
                 </h:form>
+                <h:panelGrid id="prikazPodataka">
+                    <h:dataTable id="podaciUTablici" value="#{pregledDnevnika.dnevnik}" var="prikazPodatakaDnevnika" border="1">
+                        <h:column>
+                            <f:facet name="header">ID</f:facet>
+                                #{prikazPodatakaDnevnika.id}
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Korisnik</f:facet>
+                            ^#{prikazPodatakaDnevnika.korisnik}
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Ip adresa</f:facet>
+                                #{prikazPodatakaDnevnika.ipadresa}
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Status</f:facet>
+                                #{prikazPodatakaDnevnika.status}
+                        </h:column> 
+                        <h:column>
+                            <f:facet name="header">Trajanje</f:facet>
+                                #{prikazPodatakaDnevnika.trajanje}
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">URL</f:facet>
+                                #{prikazPodatakaDnevnika.url}
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Vrijeme</f:facet>
+                                #{prikazPodatakaDnevnika.vrijeme}
+                        </h:column>
+                    </h:dataTable>
+
+                </h:panelGrid>
             </ui:define>
 
         </ui:composition>
