@@ -53,11 +53,14 @@
                         </h:selectManyListbox>
                         <h:panelGrid columns="1">
                             <h:commandButton value="Preuzmi" action="#{odabirIoTPrognoza.preuzmiRaspoloziveIoTUredaje()}" /> 
-                            <h:commandButton value="Vrati" action="a" /> 
+                            <h:commandButton value="Vrati" action="#{odabirIoTPrognoza.vratiDodaneUredjaje()}" >
+                                <f:ajax execute="odabraniIoT raspoloziviIoT" render="odabraniIoT raspoloziviIoT p"/>
+                            </h:commandButton>
                             <h:commandButton value="Ažuriraj" action="#{odabirIoTPrognoza.azuriraj()}" > 
                                 <f:ajax execute="raspoloziviIoT" render="panelGridPrikaz"/>
                             </h:commandButton>
                         </h:panelGrid>
+
                         <h:selectManyListbox id="odabraniIoT" size="7"
                                              value="#{odabirIoTPrognoza.popisOdabraniIoT}">
                             <f:selectItems value="#{odabirIoTPrognoza.odabraniIoT}" var="o" 
