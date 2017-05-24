@@ -71,6 +71,7 @@ public class OdabirIoTPrognoza implements Serializable {
     private String gumbPregledPrognoza = "Pregled prognoza";
     private MeteoPrognoza[] lis;
     boolean vrati = false;
+    private String greska;
 
     public String getNoviId() {
         return noviId;
@@ -188,6 +189,15 @@ public class OdabirIoTPrognoza implements Serializable {
         this.gumbPregledPrognoza = gumbPregledPrognoza;
     }
 
+    public String getGreska() {
+        return greska;
+    }
+
+    public void setGreska(String greska) {
+        this.greska = greska;
+    }
+    
+
     private void spremiUPromjene(int id, String naziv, float lat, float log, int status) {
         Promjene promjene = new Promjene();
         promjene.setId(id);
@@ -230,9 +240,12 @@ public class OdabirIoTPrognoza implements Serializable {
         if (!noviId.isEmpty() && !noviAdresa.isEmpty() && !noviNaziv.isEmpty()) {
             if (isInteger(noviId) == false) {
                 System.out.println("NIJE INTEGER");
+                greska="ID treba biti broj";
             } else if (uredajiFacade.find(Integer.parseInt(noviId)) != null) {
                 System.out.println("ID POSTOJI");
+                greska="ID već postoji";
             } else {
+                greska="";
                 long pocetak = System.currentTimeMillis();
                 Lokacija l = meteoIoTKlijent.dajLokaciju(noviAdresa);
                 Uredaji uredaji = new Uredaji(Integer.parseInt(noviId), noviNaziv,
@@ -245,7 +258,7 @@ public class OdabirIoTPrognoza implements Serializable {
                 spremiUDnevnik((int) (kraj - pocetak));
             }
         } else {
-
+            greska="Niste upisali sve podatke";
         }
         return "";
     }
@@ -305,12 +318,14 @@ public class OdabirIoTPrognoza implements Serializable {
     public void azuriraj() {
         if (this.popisRaspoloziviIoT.size() == 1) {
             azuriranje = true;
+            greska="";
             azurirajId = popisRaspoloziviIoT.get(0);
             uredjajZaAzuriranje = uredajiFacade.find(Integer.parseInt(azurirajId));
             azurirajNaziv = uredjajZaAzuriranje.getNaziv();
             azurirajAdresa = meteoIoTKlijent.dajMjesto(String.valueOf(uredjajZaAzuriranje.getLatitude()), String.valueOf(uredjajZaAzuriranje.getLongitude()));
 
         } else {
+            greska="Uzeli ste previše argumenata";
             System.out.println("PREVIŠE ARGUMENATA");
         }
 
@@ -319,6 +334,7 @@ public class OdabirIoTPrognoza implements Serializable {
     public void spremmiAzuriranjeUBazu() {
         if (!azurirajId.isEmpty() && !azurirajAdresa.isEmpty() && !azurirajNaziv.isEmpty()) {
             if (isInteger(azurirajId) == true) {
+                greska="";
                 long pocetak = System.currentTimeMillis();
                 if (this.azurirajId.equals(uredjajZaAzuriranje.getId().toString())) {
                     uredjajZaAzuriranje.setNaziv(azurirajNaziv);
@@ -342,6 +358,7 @@ public class OdabirIoTPrognoza implements Serializable {
                 long kraj = System.currentTimeMillis();
                 spremiUDnevnik((int) (kraj - pocetak));
             } else {
+                greska="ID treba biti broj";
                 System.out.println("NISTE UPISAli INTEGERA");
             }
         }

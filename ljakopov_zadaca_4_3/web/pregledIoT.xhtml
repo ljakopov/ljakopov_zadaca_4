@@ -24,6 +24,9 @@
             </ui:define>
 
             <ui:define name="content">
+                <h:panelGrid id="greske">
+                    #{odabirIoTPrognoza.greska}
+                </h:panelGrid>
                 <h:form>
                     <h:panelGrid columns="3">
                         <h:outputLabel for="noviId" value="ID: "/>
@@ -37,7 +40,7 @@
                         <h:outputText value="" />
                         <h:commandButton value="Dodaj IoT Uređaj" 
                                          action="#{odabirIoTPrognoza.dodajIoTUredaj()}">
-                            <f:ajax execute="noviId noviNaziv noviAdresa" render="raspoloziviIoT" />
+                            <f:ajax execute="noviId noviNaziv noviAdresa" render="raspoloziviIoT greske" />
                         </h:commandButton>
 
                     </h:panelGrid>
@@ -57,7 +60,7 @@
                                 <f:ajax execute="odabraniIoT raspoloziviIoT" render="odabraniIoT raspoloziviIoT p"/>
                             </h:commandButton>
                             <h:commandButton value="Ažuriraj" action="#{odabirIoTPrognoza.azuriraj()}" > 
-                                <f:ajax execute="raspoloziviIoT" render="panelGridPrikaz"/>
+                                <f:ajax execute="raspoloziviIoT" render="panelGridPrikaz greske"/>
                             </h:commandButton>
                         </h:panelGrid>
 
@@ -83,7 +86,7 @@
                         <h:inputText id="azurirajAdresa" value="#{odabirIoTPrognoza.azurirajAdresa}" rendered="#{odabirIoTPrognoza.azuriranje}"/>
                         <h:outputText value="" rendered="#{odabirIoTPrognoza.azuriranje}"/>
                         <h:commandButton value="Upiši" action="#{odabirIoTPrognoza.spremmiAzuriranjeUBazu()}" rendered="#{odabirIoTPrognoza.azuriranje}">
-                            <f:ajax execute="raspoloziviIoT panelGridPrikaz" render="raspoloziviIoT panelGridPrikaz"/>
+                            <f:ajax execute="raspoloziviIoT panelGridPrikaz" render="raspoloziviIoT panelGridPrikaz greske"/>
                         </h:commandButton>
                     </h:panelGrid>
                 </h:form>
