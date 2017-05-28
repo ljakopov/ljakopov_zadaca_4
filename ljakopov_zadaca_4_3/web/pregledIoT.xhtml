@@ -55,9 +55,11 @@
                                            itemLabel="#{r.labela}" itemValue="#{r.vrijednost}"/>
                         </h:selectManyListbox>
                         <h:panelGrid columns="1">
-                            <h:commandButton value="Preuzmi" action="#{odabirIoTPrognoza.preuzmiRaspoloziveIoTUredaje()}" /> 
+                            <h:commandButton value="Preuzmi" action="#{odabirIoTPrognoza.preuzmiRaspoloziveIoTUredaje()}" >
+                                <f:ajax execute="odabraniIoT raspoloziviIoT" render="odabraniIoT raspoloziviIoT"/>
+                            </h:commandButton>
                             <h:commandButton value="Vrati" action="#{odabirIoTPrognoza.vratiDodaneUredjaje()}" >
-                                <f:ajax execute="odabraniIoT raspoloziviIoT" render="odabraniIoT raspoloziviIoT p"/>
+                                <f:ajax execute="odabraniIoT raspoloziviIoT" render="odabraniIoT raspoloziviIoT"/>
                             </h:commandButton>
                             <h:commandButton value="Ažuriraj" action="#{odabirIoTPrognoza.azuriraj()}" > 
                                 <f:ajax execute="raspoloziviIoT" render="panelGridPrikaz greske"/>
@@ -131,6 +133,10 @@
                         <h:column>
                             <f:facet name="header">Vrijeme opis</f:facet>
                                 #{prikazMeteoPodataka.prognoza.weatherValue}
+                        </h:column>
+                         <h:column>
+                            <f:facet name="header">Datum</f:facet>
+                                #{prikazMeteoPodataka.prognoza.lastUpdate}
                         </h:column>
                     </h:dataTable>
 

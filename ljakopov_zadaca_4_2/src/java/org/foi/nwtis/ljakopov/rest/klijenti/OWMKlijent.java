@@ -6,6 +6,9 @@
 package org.foi.nwtis.ljakopov.rest.klijenti;
 
 import java.io.StringReader;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -112,30 +115,23 @@ public class OWMKlijent {
 
         MeteoPrognoza[] mp = new MeteoPrognoza[brojPrognoza];
         for (int i = 0; i < jsonArray.size(); i++) {
-            JsonObject iJsonObject = jsonArray.getJsonObject(i);
-    
-            /*
-            float a = (float) iJsonObject.getJsonObject("main").getJsonNumber("temp").doubleValue();
-            System.out.println(iJsonObject.getJsonObject("main").getJsonNumber("temp_min").doubleValue());
-            System.out.println(iJsonObject.getJsonObject("main").getJsonNumber("temp_max").doubleValue());
-            System.out.println(iJsonObject.getJsonObject("main").getJsonNumber("humidity").doubleValue());
-            System.out.println(iJsonObject.getJsonObject("main").getJsonNumber("pressure").doubleValue());
-            System.out.println(iJsonObject.getJsonObject("wind").getJsonNumber("speed").doubleValue());
-            System.out.println(iJsonObject.getJsonObject("clouds").getInt("all"));
-            System.out.println(iJsonObject.getJsonArray("weather").getJsonObject(0).getInt("id"));
-            System.out.println(iJsonObject.getJsonArray("weather").getJsonObject(0).getString("description"));
-            System.out.println(iJsonObject.getJsonArray("weather").getJsonObject(0).getString("icon"));
-             */
-            MeteoPodaci meteoPodaci = new MeteoPodaci(new Date(), new Date(), (float) iJsonObject.getJsonObject("main").getJsonNumber("temp").doubleValue(),
-                    (float) iJsonObject.getJsonObject("main").getJsonNumber("temp_min").doubleValue(),
-                    (float) iJsonObject.getJsonObject("main").getJsonNumber("temp_max").doubleValue(), "C",
-                    (float) iJsonObject.getJsonObject("main").getJsonNumber("humidity").doubleValue(), "%",
-                    (float) iJsonObject.getJsonObject("main").getJsonNumber("pressure").doubleValue(), "hPa",
-                    (float) iJsonObject.getJsonObject("wind").getJsonNumber("speed").doubleValue(), "", 0.0f, "", "",
-                    iJsonObject.getJsonObject("clouds").getInt("all"), "", "OK", 0.0f, "", "",
-                    iJsonObject.getJsonArray("weather").getJsonObject(0).getInt("id"), iJsonObject.getJsonArray("weather").getJsonObject(0).getString("description"),
-                    iJsonObject.getJsonArray("weather").getJsonObject(0).getString("icon"), new Date());
-            mp[i] = new MeteoPrognoza(id, 1, meteoPodaci);
+            try {
+                JsonObject iJsonObject = jsonArray.getJsonObject(i);
+                DateFormat formatter = null;
+                formatter =new SimpleDateFormat("yyyy-MM-dd HH:mm:SS");
+                MeteoPodaci meteoPodaci = new MeteoPodaci(new Date(), new Date(), (float) iJsonObject.getJsonObject("main").getJsonNumber("temp").doubleValue(),
+                        (float) iJsonObject.getJsonObject("main").getJsonNumber("temp_min").doubleValue(),
+                        (float) iJsonObject.getJsonObject("main").getJsonNumber("temp_max").doubleValue(), "C",
+                        (float) iJsonObject.getJsonObject("main").getJsonNumber("humidity").doubleValue(), "%",
+                        (float) iJsonObject.getJsonObject("main").getJsonNumber("pressure").doubleValue(), "hPa",
+                        (float) iJsonObject.getJsonObject("wind").getJsonNumber("speed").doubleValue(), "", 0.0f, "", "",
+                        iJsonObject.getJsonObject("clouds").getInt("all"), "", "OK", 0.0f, "", "",
+                        iJsonObject.getJsonArray("weather").getJsonObject(0).getInt("id"), iJsonObject.getJsonArray("weather").getJsonObject(0).getString("description"),
+                        iJsonObject.getJsonArray("weather").getJsonObject(0).getString("icon"), formatter.parse(iJsonObject.getString("dt_txt")));
+                mp[i] = new MeteoPrognoza(id, 1, meteoPodaci);
+            } catch (ParseException ex) {
+                Logger.getLogger(OWMKlijent.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return mp;
     }
