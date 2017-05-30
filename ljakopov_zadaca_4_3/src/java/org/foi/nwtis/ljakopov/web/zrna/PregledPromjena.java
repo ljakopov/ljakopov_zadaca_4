@@ -25,7 +25,7 @@ import org.foi.nwtis.ljakopov.ejb.sb.PromjeneFacade;
 
 /**
  *
- * @author ljakopov
+ * @author ljakopov. Klasa služi za prikaz podataka promjena
  */
 @Named(value = "pregledPromjena")
 @SessionScoped
@@ -36,6 +36,9 @@ public class PregledPromjena implements Serializable {
 
     private String id;
     private String naziv;
+    /**
+     * lista u koju se spremaju podaci promjena
+     */
     private List<Promjene> promjena = new ArrayList<>();
     private boolean prikazPromjena = false;
 
@@ -76,8 +79,13 @@ public class PregledPromjena implements Serializable {
     public void setPrikazPromjena(boolean prikazPromjena) {
         this.prikazPromjena = prikazPromjena;
     }
-    
 
+    /**
+     *
+     * metoad preuzmiPodatkePromjena() se koristi kod prikaza svih podataka
+     * promjena. Prvo se provjerava koji su od podataka upisani te se na temelju
+     * toga prikaju
+     */
     public void preuzmiPodatkePromjena() {
         prikazPromjena = true;
         EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("zadaca_4_1PU");

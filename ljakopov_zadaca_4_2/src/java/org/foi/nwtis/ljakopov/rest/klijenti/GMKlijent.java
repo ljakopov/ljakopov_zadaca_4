@@ -63,6 +63,14 @@ public class GMKlijent {
         return null;
     }
 
+    /**
+     * metoda služi za dohvaćanje adrese mjesta preko latitude i longitude. Ona
+     * Podatke uzima s JSON-a.
+     *
+     * @param lat
+     * @param lot
+     * @return String
+     */
     public String getGeoLocationFromLatLot(String lat, String lot) {
         try {
             WebTarget webResource = client.target(GMRESTHelper.getGM_BASE_URI())

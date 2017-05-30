@@ -7,9 +7,7 @@ package org.foi.nwtis.ljakopov.web.kontrole;
 
 /**
  *
- * @author Lovro 
- * Klasa služi za spremanje mapa koje korisnik posjeduje na svojem
- * email računu na localhostu i kasniji ispis 
+ * @author ljakopov
  */
 public class Izbornik {
 

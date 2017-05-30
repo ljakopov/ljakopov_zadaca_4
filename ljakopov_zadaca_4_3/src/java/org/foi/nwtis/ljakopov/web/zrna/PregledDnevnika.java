@@ -25,7 +25,7 @@ import org.foi.nwtis.ljakopov.ejb.sb.DnevnikFacade;
 
 /**
  *
- * @author ljakopov
+ * @author ljakopov. Klasa služi za prikaz dnevnika rada korisnika
  */
 @Named(value = "pregledDnevnika")
 @SessionScoped
@@ -41,7 +41,13 @@ public class PregledDnevnika implements Serializable {
     private Date vrijeme_do;
     private String trajanje;
     private String status;
+    /**
+     * lista za spremanje vraćenih podataka
+     */
     private List<Dnevnik> dnevnik = new ArrayList<>();
+    /**
+     * varijabla za provjeru broja kriterija
+     */
     int atributi = 0;
     private boolean prikazDnevnika = false;
 
@@ -123,6 +129,11 @@ public class PregledDnevnika implements Serializable {
         this.prikazDnevnika = prikazDnevnika;
     }
 
+    /**
+     * metoda preuzimanjePodataka() služi za ispis svih podataka sa dnevnika.
+     * prvo se provjerava kolko je upisanih kriterija, te se na temelju tog
+     * upisanog broja kriterija oni provjeravaju
+     */
     public void preuzimanjePodataka() {
         prikazDnevnika = true;
         atributi = 0;

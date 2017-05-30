@@ -35,7 +35,8 @@ import org.foi.nwtis.ljakopov.web.podaci.MeteoPrognoza;
 
 /**
  *
- * @author ljakopov
+ * @author ljakopov. Klasa služi za prikaz, rukovanje i spremanje podataka u
+ * bazu podataka
  */
 @Named(value = "odabirIoTPrognoza")
 @SessionScoped
@@ -59,25 +60,52 @@ public class OdabirIoTPrognoza implements Serializable {
     public OdabirIoTPrognoza() {
     }
 
+    /**
+     * varijable za unos novog uređaja
+     */
     private String noviId;
     private String noviNaziv;
     private String noviAdresa;
+    /**
+     * liste za baratanje uređajima
+     */
     private List<Izbornik> raspoloziviIoT = new ArrayList<>();
     private List<Izbornik> odabraniIoT = new ArrayList<>();
     private List<String> popisRaspoloziviIoT = new ArrayList<>();
     private List<String> popisOdabraniIoT = new ArrayList<>();
+    /**
+     * varijable za ažuriranje uređaja
+     */
     private String azurirajId;
     private String azurirajNaziv;
     private String azurirajAdresa;
+    /**
+     * lista za ispis prognoza
+     */
     private List<MeteoPrognoza> meteoPrognoze = new ArrayList<>();
+    /**
+     * boolean varijable za prikaz kroz ajax
+     */
     private boolean azuriranje;
     private boolean prognoze = false;
     private boolean prvi = true;
+    /**
+     * varijabla za pamćenje uređaja kod ažuriranja
+     */
     Uredaji uredjajZaAzuriranje;
+    /**
+     * varijabla za gumb kod pregleda prognoza
+     */
     private String gumbPregledPrognoza = "Pregled prognoza";
     private MeteoPrognoza[] lis;
     boolean vrati = false;
+    /**
+     * varijabla za ispis greške
+     */
     private String greska;
+    /**
+     * varijabla za dohvaćanje konfiguracijske datoteke
+     */
     public static String datoteka;
 
     public String getNoviId() {
@@ -204,6 +232,11 @@ public class OdabirIoTPrognoza implements Serializable {
         this.greska = greska;
     }
 
+    /**
+     * metoda spremiIUPromjene se poziva kod spremanja podataka u tablicu
+     * promjena. Koristi id,naziv, lat, log i status. Na početku kreira se
+     * objekt promjene te se kasnije taj objekt sprema sa svim podacima
+     */
     private void spremiUPromjene(int id, String naziv, float lat, float log, int status) {
         Promjene promjene = new Promjene();
         promjene.setId(id);
@@ -216,6 +249,12 @@ public class OdabirIoTPrognoza implements Serializable {
         promjeneFacade.create(promjene);
     }
 
+    /**
+     * metoda spremiIUDnevnik se poziva kod spremanja podataka u tablicu
+     * dnevnik. Koristi integer trajanje. Na početku kreira se objekt dnevnik te
+     * se kasnije taj objekt sprema sa svim podacima u tablicu dnevnik. Metoda
+     * se poziva nakon obavljanja neke ispravne radnje.
+     */
     private void spremiUDnevnik(int trajanje) {
         HttpServletRequest httpServletRequest = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
         String ipAdresa = httpServletRequest.getHeader("X-FORWARDED-FOR");
@@ -233,6 +272,13 @@ public class OdabirIoTPrognoza implements Serializable {
         dnevnikFacade.create(dnevnik);
     }
 
+    /**
+     * metoda isInteger provjerava da li je upisani ID integer. Ako se radi o
+     * integeru vraća true, a ako nije vraća false.
+     *
+     * @param s
+     * @return boolean
+     */
     public static boolean isInteger(String s) {
         try {
             Integer.parseInt(s);
@@ -242,6 +288,13 @@ public class OdabirIoTPrognoza implements Serializable {
         return true;
     }
 
+    /**
+     * metoda dodajToTUredjaj sprema novouneseni uređaj u bazu podataka. Prvo se
+     * provjerava da li su sve varijable unesene. Nakon toga da li je ID
+     * integer. Ako je on upisan, da li se ID već nalazi u bazi podataka. U
+     * slučaju da se ne nalazi, sprema se novi uređaj u bazu podataka. Radnja se
+     * bilježi u tablicu dnevnik.
+     */
     public String dodajIoTUredaj() {
         if (!noviId.isEmpty() && !noviAdresa.isEmpty() && !noviNaziv.isEmpty()) {
             if (isInteger(noviId) == false) {
@@ -269,6 +322,11 @@ public class OdabirIoTPrognoza implements Serializable {
         return "";
     }
 
+    /**
+     * metoda preuzmi preuzmiRaspoloziveIoTUredaje() uzima sve uređaje iz baze
+     * podataka i provjerava gdje se nalaze. Tj. da li pripadaju listi
+     * raspoloživih uređaja ili listi odabranih uređaja
+     */
     public void preuzmiRaspoloziveIoTUredaje() {
         long pocetak = System.currentTimeMillis();
         boolean prvi = false;
@@ -308,6 +366,10 @@ public class OdabirIoTPrognoza implements Serializable {
         this.popisRaspoloziviIoT.clear();
     }
 
+    /**
+     * metoda vratiDodaneUredjaje() vraća uređaje iz liste odabranih uređaja u
+     * listu raspoloživih uređaja
+     */
     public void vratiDodaneUredjaje() {
         popisRaspoloziviIoT.clear();
         for (Iterator<Izbornik> iterator = odabraniIoT.iterator(); iterator.hasNext();) {
@@ -321,6 +383,12 @@ public class OdabirIoTPrognoza implements Serializable {
         preuzmiRaspoloziveIoTUredaje();
     }
 
+    /**
+     * metoda azuriraj() uzima JEDAN uređaj iz liste raspoloživih uređaja,
+     * pronalazi ga u bazi podataka, traži njegove lat i log i ispisuje njegove
+     * podatke, zajedno sa adresom na korisničko sučelje. Ako je uzeto više
+     * uređaja ispisuje se greška
+     */
     public void azuriraj() {
         if (this.popisRaspoloziviIoT.size() == 1) {
             azuriranje = true;
@@ -337,6 +405,14 @@ public class OdabirIoTPrognoza implements Serializable {
 
     }
 
+    /**
+     * metoda spremmiAzuriranjeUBazu() prvo provjerava da li su upisani svi
+     * argumenti. Zatim provjerva da li je upisani ID jednak prijašnjem. Ako je
+     * jednak on ažurira uređaj i sve sprema u tablicu projema i dnevnik. Ako
+     * nije jednak, briše prijašnjeg uređaja, sprema novog i opet sve upisuje u
+     * tablicu promjea i dnevnik. Ako se dogodila neka greška vraća određeni
+     * ispis.
+     */
     public void spremmiAzuriranjeUBazu() {
         if (!azurirajId.isEmpty() && !azurirajAdresa.isEmpty() && !azurirajNaziv.isEmpty()) {
             if (isInteger(azurirajId) == true) {
@@ -381,6 +457,11 @@ public class OdabirIoTPrognoza implements Serializable {
         }
     }
 
+    /**
+     * metoda dohvatiPrognoze() uzima konfiguracijsku datoteku i apikey, šalje
+     * ga meteoIoTKlijentu. Uzima sve odabrane uređaje i preko ostalih metoda
+     * dobiva prognoze kroz sljedeći 5 dana za uređaje.
+     */
     public void dohvatiPrognoze() {
         Konfiguracija konf = null;
         try {

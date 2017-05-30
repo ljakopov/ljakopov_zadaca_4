@@ -7,7 +7,7 @@ package org.foi.nwtis.ljakopov.web.podaci;
 
 /**
  *
- * @author ljakopov
+ * @author ljakopov. Klasa sprema MeteoPrognoze za dane.
  */
 public class MeteoPrognoza {
 

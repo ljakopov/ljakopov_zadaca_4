@@ -27,7 +27,7 @@ import org.foi.nwtis.ljakopov.web.podaci.MeteoPrognoza;
 /**
  *
  * @author ljakopov klasa za dohvaćanje vremena adresa na temelju lat i log,
- * preko API key kojeg smo dobili izgenerirali na openweathermap.org
+ * preko API key kojeg smo dobili generirali na openweathermap.org
  */
 public class OWMKlijent {
 
@@ -95,6 +95,15 @@ public class OWMKlijent {
         return null;
     }
 
+    /**
+     * metoda služi za dohvaćanje prognoza. Prima latitude i longitude, oni služe kao "adresa".
+     * Podatke preuzima sa JSON-a i sprema ih u listu klase MeteoPrognoza
+     *
+     * @param id
+     * @param latitude
+     * @param longitude
+     * @return MeteoPrognoza[]
+     */
     public MeteoPrognoza[] getWeatherForecast(int id, String latitude, String longitude) {
 
         WebTarget webResource = client.target(OWMRESTHelper.getOWM_BASE_URI())
@@ -118,7 +127,7 @@ public class OWMKlijent {
             try {
                 JsonObject iJsonObject = jsonArray.getJsonObject(i);
                 DateFormat formatter = null;
-                formatter =new SimpleDateFormat("yyyy-MM-dd HH:mm:SS");
+                formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:SS");
                 MeteoPodaci meteoPodaci = new MeteoPodaci(new Date(), new Date(), (float) iJsonObject.getJsonObject("main").getJsonNumber("temp").doubleValue(),
                         (float) iJsonObject.getJsonObject("main").getJsonNumber("temp_min").doubleValue(),
                         (float) iJsonObject.getJsonObject("main").getJsonNumber("temp_max").doubleValue(), "C",
