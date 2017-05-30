@@ -20,7 +20,11 @@ import org.foi.nwtis.ljakopov.web.podaci.MeteoPrognoza;
 @LocalBean
 public class MeteoIoTKlijent {
 
-    private String api_key = "73f8bbb7d2439f4fdf7d2bc55acd4ebf";
+    /**
+     *
+     * 
+     */
+    private String api_key;
 
     public void postaviKorisnickePodatke(String api_key) {
         this.api_key = api_key;
@@ -36,9 +40,9 @@ public class MeteoIoTKlijent {
         Lokacija l = dajLokaciju(adresa);
         return owmk.getWeatherForecast(id, l.getLatitude(), l.getLongitude());
     }
-    
-    public String dajMjesto(String lat, String lot){
+
+    public String dajMjesto(String lat, String lot) {
         GMKlijent gmk = new GMKlijent();
-        return gmk.getGeoLocationFromLatLot(lat,lot);
+        return gmk.getGeoLocationFromLatLot(lat, lot);
     }
 }

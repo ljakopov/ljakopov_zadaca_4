@@ -13,6 +13,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +25,10 @@ import org.foi.nwtis.ljakopov.ejb.sb.DnevnikFacade;
 import org.foi.nwtis.ljakopov.ejb.sb.MeteoIoTKlijent;
 import org.foi.nwtis.ljakopov.ejb.sb.PromjeneFacade;
 import org.foi.nwtis.ljakopov.ejb.sb.UredajiFacade;
+import org.foi.nwtis.ljakopov.konfiguracije.Konfiguracija;
+import org.foi.nwtis.ljakopov.konfiguracije.KonfiguracijaApstraktna;
+import org.foi.nwtis.ljakopov.konfiguracije.NeispravnaKonfiguracija;
+import org.foi.nwtis.ljakopov.konfiguracije.NemaKonfiguracije;
 import org.foi.nwtis.ljakopov.web.kontrole.Izbornik;
 import org.foi.nwtis.ljakopov.web.podaci.Lokacija;
 import org.foi.nwtis.ljakopov.web.podaci.MeteoPrognoza;
@@ -72,6 +78,7 @@ public class OdabirIoTPrognoza implements Serializable {
     private MeteoPrognoza[] lis;
     boolean vrati = false;
     private String greska;
+    public static String datoteka;
 
     public String getNoviId() {
         return noviId;
@@ -375,6 +382,15 @@ public class OdabirIoTPrognoza implements Serializable {
     }
 
     public void dohvatiPrognoze() {
+        Konfiguracija konf = null;
+        try {
+            konf = KonfiguracijaApstraktna.preuzmiKonfiguraciju(datoteka);
+        } catch (NemaKonfiguracije | NeispravnaKonfiguracija ex) {
+            Logger.getLogger(OdabirIoTPrognoza.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        String apikey = konf.dajPostavku("apikey");
+        System.out.println("API KEY  " + apikey);
+        meteoIoTKlijent.postaviKorisnickePodatke(apikey);
         if (prognoze == false) {
             meteoPrognoze.clear();
             long pocetak = System.currentTimeMillis();
